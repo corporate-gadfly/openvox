@@ -181,6 +181,9 @@ describe Puppet::Face[:generate, :current] do
       end
 
       it 'overwrites if files exists that are not up to date while keeping up to date files' do
+        if Puppet::Util::Platform.windows? && RUBY_VERSION.start_with?('3.2')
+          skip "Skipping on Windows with Ruby 3.2 due to known flaky mtime behavior https://github.com/OpenVoxProject/openvox/pull/515"
+        end
         # create them (first run)
         genface.types
         stats_before = [Puppet::FileSystem.stat(File.join(outputdir, 'test1.pp')), Puppet::FileSystem.stat(File.join(outputdir, 'test2.pp'))]
